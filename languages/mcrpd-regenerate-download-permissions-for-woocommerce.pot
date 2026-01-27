@@ -1,0 +1,140 @@
+# Copyright (C) 2026 crleguizamon
+# This file is distributed under the same license as the MCRPD Regenerate Download Permissions plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: MCRPD Regenerate Download Permissions 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mcrpd-regenerate-download-permissions\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-01-22 16:10+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Domain: mcrpd-regenerate-download-permissions-for-woocommerce\n"
+
+#: includes/class-mcrpd-admin.php:35 includes/class-mcrpd-admin.php:83
+msgid "Download Permissions Regenerator"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:36
+msgid "Download Perms Regen"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:48 includes/class-mcrpd-ajax.php:29
+msgid "Insufficient permissions."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:71
+msgid "Settings saved."
+msgstr ""
+
+#. translators: %s: Batch size
+#: includes/class-mcrpd-admin.php:89
+msgid "This tool scans orders and regenerates downloadable permissions in <strong>AJAX batches of %s orders</strong>. It only updates orders that contain any of the configured Product IDs."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:101
+msgid "Product IDs (comma separated)"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:105
+msgid "Order status"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:119
+msgid "Select the order statuses to process."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:126
+msgid "Save settings"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:131
+msgid "Run"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:133
+msgid "First you must save changes before executing:"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:136
+msgid "Start regeneration"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:137
+msgid "Stop"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:140
+msgid "Progress"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:142
+msgid "Page:"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:143
+msgid "Orders scanned:"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:144
+msgid "Orders updated:"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:151
+msgid "This plugin is in constant evolution. If you have ideas or suggestions, do not hesitate to contact me at"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:153
+msgid "Your collaboration is highly valued!"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:182
+msgid "Error:"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:183
+msgid "Unknown error"
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:184
+msgid "Done."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:185
+msgid "Starting..."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:186
+msgid "Stopped."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:187
+msgid "AJAX failed."
+msgstr ""
+
+#: includes/class-mcrpd-admin.php:188
+msgid "Not running."
+msgstr ""
+
+#: includes/class-mcrpd-ajax.php:35
+msgid "WooCommerce is not available."
+msgstr ""
+
+#: includes/class-mcrpd-ajax.php:39
+msgid "wc_downloadable_product_permissions() not available."
+msgstr ""
+
+#: includes/class-mcrpd-ajax.php:49
+msgid "No valid product IDs configured."
+msgstr ""
+
+#. translators: 1: Page number, 2: Scanned count, 3: Updated count
+#: includes/class-mcrpd-ajax.php:159
+msgid "Batch page %1$d: scanned %2$d orders, updated %3$d matching orders."
+msgstr ""
+
+#: mcrpd-regenerate-download-permissions.php:52
+msgid "MCRPD Regenerate Download Permissions requires WooCommerce to be installed and active."
+msgstr ""

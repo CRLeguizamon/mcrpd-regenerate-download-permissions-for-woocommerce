@@ -1,0 +1,208 @@
+/**
+ * Admin Styles for MCRPD Regenerate Download Permissions
+ */
+
+:root {
+	--mcrpd-color-white: #ffffff;
+	--mcrpd-color-gray-50: #f9fafb;
+	--mcrpd-color-gray-100: #f3f4f6;
+	--mcrpd-color-gray-200: #e5e7eb;
+	--mcrpd-color-gray-500: #6b7280;
+	--mcrpd-color-gray-800: #1f2937;
+	--mcrpd-color-blue: #2563eb;
+	--mcrpd-color-blue-hover: #1d4ed8;
+	--mcrpd-color-green: #10b981;
+	--mcrpd-border-radius: 8px;
+}
+
+.mcrpd-wrap {
+	max-width: 900px;
+	margin: 20px 20px 20px 0;
+	background: var(--mcrpd-color-white);
+	padding: 30px;
+	border-radius: var(--mcrpd-border-radius);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	color: var(--mcrpd-color-gray-800);
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.mcrpd-wrap h1 {
+	font-size: 24px;
+	font-weight: 600;
+	margin-bottom: 20px;
+	color: var(--mcrpd-color-gray-800);
+	padding: 0;
+}
+
+.mcrpd-wrap h2 {
+	font-size: 18px;
+	font-weight: 600;
+	margin-top: 30px;
+	margin-bottom: 15px;
+	padding: 0;
+}
+
+.mcrpd-wrap p {
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--mcrpd-color-gray-500);
+}
+
+/* Form Table overrides */
+.mcrpd-wrap .form-table th {
+	padding: 20px 10px 20px 0;
+	font-weight: 500;
+	color: var(--mcrpd-color-gray-800);
+}
+
+.mcrpd-wrap .form-table td {
+	padding: 15px 10px;
+}
+
+.mcrpd-wrap input[type="text"] {
+	border: 1px solid var(--mcrpd-color-gray-200);
+	border-radius: var(--mcrpd-border-radius);
+	padding: 8px 12px;
+	font-size: 14px;
+	width: 100%;
+	max-width: 450px;
+	box-shadow: none;
+	transition: border-color 0.2s;
+}
+
+.mcrpd-wrap input[type="text"]:focus {
+	border-color: var(--mcrpd-color-blue);
+	box-shadow: 0 0 0 1px var(--mcrpd-color-blue);
+	outline: none;
+}
+
+/* Checkbox Groups - Premium Look */
+.mcrpd-status-group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	max-width: 700px;
+}
+
+.mcrpd-status-option {
+	display: inline-flex;
+	align-items: center;
+	padding: 10px 16px;
+	background: var(--mcrpd-color-white);
+	border: 1px solid var(--mcrpd-color-gray-200);
+	border-radius: var(--mcrpd-border-radius);
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--mcrpd-color-gray-800);
+	transition: all 0.2s ease;
+	user-select: none;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.mcrpd-status-option:hover {
+	background: var(--mcrpd-color-gray-50);
+	border-color: var(--mcrpd-color-blue);
+}
+
+.mcrpd-status-option.checked {
+	background: #eff6ff;
+	/* light blue bg */
+	border-color: var(--mcrpd-color-blue);
+	color: var(--mcrpd-color-blue);
+}
+
+.mcrpd-status-option input[type="checkbox"] {
+	margin-right: 10px;
+	border: 1px solid var(--mcrpd-color-gray-500);
+	border-radius: 4px;
+}
+
+.mcrpd-status-option input[type="checkbox"]:checked {
+	border-color: var(--mcrpd-color-blue);
+}
+
+.mcrpd-wrap .description {
+	color: var(--mcrpd-color-gray-500);
+	font-style: italic;
+	margin-top: 15px;
+}
+
+/* Buttons */
+.mcrpd-wrap .button {
+	border-radius: var(--mcrpd-border-radius) !important;
+	padding: 6px 16px !important;
+	height: auto !important;
+	font-size: 14px !important;
+	font-weight: 500 !important;
+	transition: all 0.2s ease;
+}
+
+.mcrpd-wrap .button-primary {
+	background: var(--mcrpd-color-blue) !important;
+	border-color: var(--mcrpd-color-blue) !important;
+	color: var(--mcrpd-color-white) !important;
+}
+
+.mcrpd-wrap .button-primary:hover {
+	background: var(--mcrpd-color-blue-hover) !important;
+	border-color: var(--mcrpd-color-blue-hover) !important;
+}
+
+/* Log Box */
+#mcrpd-log {
+	background: var(--mcrpd-color-gray-50);
+	border: 1px solid var(--mcrpd-color-gray-200);
+	border-radius: var(--mcrpd-border-radius);
+	padding: 20px;
+	max-height: 350px;
+	overflow-y: auto;
+	font-family: monospace;
+	font-size: 13px;
+	color: var(--mcrpd-color-gray-800);
+	margin-top: 20px;
+}
+
+#mcrpd-log div {
+	margin-bottom: 6px;
+	border-bottom: 1px solid var(--mcrpd-color-gray-100);
+	padding-bottom: 6px;
+}
+
+#mcrpd-log div:last-child {
+	border-bottom: none;
+}
+
+/* Progress Stats */
+.mcrpd-progress {
+	background: var(--mcrpd-color-gray-100);
+	border-radius: var(--mcrpd-border-radius);
+	padding: 15px 20px;
+	margin-bottom: 20px;
+	display: flex;
+	gap: 30px;
+	list-style: none;
+	margin-left: 0 !important;
+}
+
+.mcrpd-progress li {
+	margin: 0;
+	font-weight: 500;
+	color: var(--mcrpd-color-gray-800);
+}
+
+.mcrpd-progress li span {
+	font-weight: 700;
+	color: var(--mcrpd-color-blue);
+}
+
+/* Status colors in log */
+.mcrpd-log-error {
+	color: #dc2626;
+	font-weight: bold;
+}
+
+.mcrpd-log-success {
+	color: var(--mcrpd-color-green);
+	font-weight: bold;
+}
