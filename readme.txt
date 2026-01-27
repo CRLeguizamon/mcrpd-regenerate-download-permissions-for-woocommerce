@@ -5,7 +5,7 @@ Tags: woocommerce, permissions, regenerate, downloads, batch
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -63,7 +63,7 @@ This plugin is in constant evolution. If you have ideas or suggestions, do not h
 
 == Changelog ==
 
-= 1.0.0 =
+= 1.0.1 =
 *   Initial release.
 *   AJAX batch processing to handle large volumes of orders.
 *   Filter by Product IDs.

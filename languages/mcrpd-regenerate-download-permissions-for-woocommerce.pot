@@ -1,9 +1,9 @@
 # Copyright (C) 2026 crleguizamon
-# This file is distributed under the same license as the MCRPD Regenerate Download Permissions plugin.
+# This file is distributed under the same license as the MCRPD Regenerate Download Permissions for WooCommerce plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: MCRPD Regenerate Download Permissions 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mcrpd-regenerate-download-permissions\n"
+"Project-Id-Version: MCRPD Regenerate Download Permissions for WooCommerce 1.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mcrpd-regenerate-download-permissions-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -135,6 +135,6 @@ msgstr ""
 msgid "Batch page %1$d: scanned %2$d orders, updated %3$d matching orders."
 msgstr ""
 
-#: mcrpd-regenerate-download-permissions.php:52
+#: mcrpd-regenerate-download-permissions-for-woocommerce.php:53
 msgid "MCRPD Regenerate Download Permissions requires WooCommerce to be installed and active."
 msgstr ""

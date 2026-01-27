@@ -3,12 +3,13 @@
  * Plugin Name: MCRPD Regenerate Download Permissions for woocommerce
  * Requires Plugins: woocommerce
  * Description: Regenerate downloadable permissions for orders in batches.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: crleguizamon
  * Author URI: https://mcodform.com/
  * Requires PHP: 7.4
  * Requires at least: 5.0
  * License: GPLv3
+ * Domain Path: /languages
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants.
-define( 'MCRPD_VERSION', '1.0.0' );
+define( 'MCRPD_VERSION', '1.0.1' );
 define( 'MCRPD_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MCRPD_INC', MCRPD_DIR . 'includes/' );
 define( 'MCRPD_URL', plugin_dir_url( __FILE__ ) );

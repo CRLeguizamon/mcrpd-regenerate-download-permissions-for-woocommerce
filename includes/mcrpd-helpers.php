@@ -32,7 +32,7 @@ function mcrpd_default_settings() : array {
 	/**
 	 * Filter default settings.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0.1
 	 * @param array $defaults Default settings.
 	 */
 	return apply_filters( 'mcrpd_default_settings', $defaults );
