@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants.
-define( 'MCRPD_VERSION', '1.0.1' );
+define( 'MCRPD_VERSION', '1.0.2' );
 define( 'MCRPD_DIR', plugin_dir_path( __FILE__ ) );
 define( 'MCRPD_INC', MCRPD_DIR . 'includes/' );
 define( 'MCRPD_URL', plugin_dir_url( __FILE__ ) );

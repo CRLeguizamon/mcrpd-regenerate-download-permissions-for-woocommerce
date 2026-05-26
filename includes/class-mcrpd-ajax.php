@@ -69,7 +69,7 @@ class MCRPD_Ajax {
 		/**
 		 * Filter query arguments for fetching orders.
 		 *
-		 * @since 1.0.1
+		 * @since 1.0.2
 		 * @param array $args Query arguments.
 		 */
 		$args = apply_filters( 'mcrpd_regen_query_args', $args );
@@ -87,7 +87,7 @@ class MCRPD_Ajax {
 		/**
 		 * Action before batch processing.
 		 *
-		 * @since 1.0.1
+		 * @since 1.0.2
 		 * @param array $orders List of orders in current batch.
 		 * @param int   $page   Current page.
 		 */
@@ -105,7 +105,7 @@ class MCRPD_Ajax {
 			/**
 			 * Filter whether to process a specific order.
 			 *
-			 * @since 1.0.1
+			 * @since 1.0.2
 			 * @param bool     $should_process Whether to process.
 			 * @param WC_Order $order          Order object.
 			 */
@@ -126,7 +126,7 @@ class MCRPD_Ajax {
 				/**
 				 * Action after order is processed.
 				 *
-				 * @since 1.0.1
+				 * @since 1.0.2
 				 * @param int      $order_id Order ID.
 				 * @param WC_Order $order    Order object.
 				 */
@@ -140,7 +140,7 @@ class MCRPD_Ajax {
 		/**
 		 * Action after batch processing.
 		 *
-		 * @since 1.0.1
+		 * @since 1.0.2
 		 * @param array $orders List of orders in current batch.
 		 * @param int   $page   Current page.
 		 */

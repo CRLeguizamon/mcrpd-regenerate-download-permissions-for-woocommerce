@@ -3,9 +3,9 @@ Contributors: crleguizamon
 Donate link: https://www.paypal.com/paypalme/cristian18josue
 Tags: woocommerce, permissions, regenerate, downloads, batch
 Requires at least: 5.0
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -62,6 +62,10 @@ This plugin is in constant evolution. If you have ideas or suggestions, do not h
 2.  Order Status selection with modern pill design.
 
 == Changelog ==
+
+= 1.0.2 =
+*   Add compatibility with WordPress 7.0.
+*   Security hardening in settings saving and AJAX requests.
 
 = 1.0.1 =
 *   Initial release.

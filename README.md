@@ -62,9 +62,11 @@ You can stop the regeneration at any time using the **Stop** button. You can res
 
 ## Changelog
 
-### 1.0.1
+### 1.0.2
+- Added compatibility with WordPress 7.0.
 - Added `Requires Plugins: woocommerce` header for WordPress 6.5+ plugin dependencies.
 - Renamed plugin to include "for WooCommerce" suffix.
+- Security hardening in settings saving and AJAX requests.
 
 ### 1.0.0
 - Initial release.
