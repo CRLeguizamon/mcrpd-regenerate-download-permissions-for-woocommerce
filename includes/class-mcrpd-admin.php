@@ -54,10 +54,10 @@ class MCRPD_Admin {
 
 			$product_ids_csv = isset( $_POST['product_ids_csv'] ) ? sanitize_text_field( wp_unslash( $_POST['product_ids_csv'] ) ) : '';
 			// Handle array for order_statuses (multiselect).
-			$raw_statuses = isset( $_POST['order_statuses'] ) ? (array) $_POST['order_statuses'] : array();
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized on next line via sanitize_key.
+			$raw_statuses = isset( $_POST['order_statuses'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['order_statuses'] ) ) : array();
 			
-			// Sanitize each key in the array.
-			$clean_statuses = array_map( 'sanitize_key', wp_unslash( $raw_statuses ) );
+			$clean_statuses = $raw_statuses;
 			$order_statuses = implode( ',', $clean_statuses );
 
 			// Batch size — sanitize and clamp between 1 and 500.
@@ -205,6 +205,7 @@ class MCRPD_Admin {
 				'stopped'            => __( 'Stopped.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 				'ajaxFailed'         => __( 'AJAX failed. Your progress has been saved — use the "Continue" button to resume.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 				'notRunning'         => __( 'Not running.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				/* translators: %s: Page number from which the process resumes. */
 				'continuing'         => __( 'Continuing from page %s...', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 				'continueNoProgress' => __( 'No saved progress found. Use "Start regeneration" instead.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 				'progressSaved'      => __( 'Progress saved. You can close this page and resume later using the "Continue" button.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
