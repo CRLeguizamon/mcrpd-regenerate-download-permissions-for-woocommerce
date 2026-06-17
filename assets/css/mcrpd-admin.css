@@ -12,6 +12,10 @@
 	--mcrpd-color-blue: #2563eb;
 	--mcrpd-color-blue-hover: #1d4ed8;
 	--mcrpd-color-green: #10b981;
+	--mcrpd-color-amber-50: #fffbeb;
+	--mcrpd-color-amber-200: #fde68a;
+	--mcrpd-color-amber-600: #d97706;
+	--mcrpd-color-amber-700: #b45309;
 	--mcrpd-border-radius: 8px;
 }
 
@@ -76,6 +80,23 @@
 	outline: none;
 }
 
+/* Number input */
+.mcrpd-wrap input[type="number"] {
+	border: 1px solid var(--mcrpd-color-gray-200);
+	border-radius: var(--mcrpd-border-radius);
+	padding: 8px 12px;
+	font-size: 14px;
+	width: 100px;
+	box-shadow: none;
+	transition: border-color 0.2s;
+}
+
+.mcrpd-wrap input[type="number"]:focus {
+	border-color: var(--mcrpd-color-blue);
+	box-shadow: 0 0 0 1px var(--mcrpd-color-blue);
+	outline: none;
+}
+
 /* Checkbox Groups - Premium Look */
 .mcrpd-status-group {
 	display: flex;
@@ -128,6 +149,29 @@
 	margin-top: 15px;
 }
 
+/* Batch Size Warning */
+.mcrpd-batch-warning {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin-top: 12px;
+	padding: 12px 16px;
+	background: var(--mcrpd-color-amber-50);
+	border: 1px solid var(--mcrpd-color-amber-200);
+	border-left: 4px solid var(--mcrpd-color-amber-600);
+	border-radius: var(--mcrpd-border-radius);
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--mcrpd-color-amber-700);
+	max-width: 550px;
+}
+
+.mcrpd-batch-warning .dashicons {
+	color: var(--mcrpd-color-amber-600);
+	margin-top: 1px;
+	flex-shrink: 0;
+}
+
 /* Buttons */
 .mcrpd-wrap .button {
 	border-radius: var(--mcrpd-border-radius) !important;
@@ -147,6 +191,23 @@
 .mcrpd-wrap .button-primary:hover {
 	background: var(--mcrpd-color-blue-hover) !important;
 	border-color: var(--mcrpd-color-blue-hover) !important;
+}
+
+/* Continue Button */
+.mcrpd-btn-continue {
+	background: var(--mcrpd-color-amber-50) !important;
+	border-color: var(--mcrpd-color-amber-600) !important;
+	color: var(--mcrpd-color-amber-700) !important;
+}
+
+.mcrpd-btn-continue:hover {
+	background: var(--mcrpd-color-amber-200) !important;
+	border-color: var(--mcrpd-color-amber-700) !important;
+	color: var(--mcrpd-color-amber-700) !important;
+}
+
+.mcrpd-continue-hidden {
+	display: none !important;
 }
 
 /* Log Box */
@@ -205,4 +266,9 @@
 .mcrpd-log-success {
 	color: var(--mcrpd-color-green);
 	font-weight: bold;
+}
+
+.mcrpd-log-warning {
+	color: var(--mcrpd-color-amber-600);
+	font-weight: 600;
 }

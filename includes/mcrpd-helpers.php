@@ -27,6 +27,7 @@ function mcrpd_default_settings() : array {
 	$defaults = array(
 		'product_ids_csv' => '',
 		'order_statuses'  => 'wc-completed', // comma separated
+		'batch_size'      => 20,
 	);
 
 	/**
@@ -52,6 +53,29 @@ function mcrpd_get_settings() : array {
 	}
 
 	return array_merge( $defaults, $saved );
+}
+
+/**
+ * Get the batch size for AJAX processing.
+ *
+ * Reads the saved setting, clamps it between 1 and 500,
+ * and allows filtering via the 'mcrpd_batch_size' hook.
+ *
+ * @since 1.1.0
+ * @return int
+ */
+function mcrpd_get_batch_size() : int {
+	$settings   = mcrpd_get_settings();
+	$batch_size = isset( $settings['batch_size'] ) ? absint( $settings['batch_size'] ) : 20;
+	$batch_size = max( 1, min( 500, $batch_size ) );
+
+	/**
+	 * Filter the batch size used for AJAX processing.
+	 *
+	 * @since 1.1.0
+	 * @param int $batch_size The batch size (1–500).
+	 */
+	return (int) apply_filters( 'mcrpd_batch_size', $batch_size );
 }
 
 /**

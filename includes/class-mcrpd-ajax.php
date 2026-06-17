@@ -54,10 +54,12 @@ class MCRPD_Ajax {
 
 		$page = isset( $_POST['page'] ) ? max( 1, absint( $_POST['page'] ) ) : 1;
 
-		// Fetch 20 orders per batch (AJAX requirement).
+		// Fetch orders per batch (configurable via settings).
+		$batch_size = mcrpd_get_batch_size();
+
 		$args = array(
 			'status'   => $statuses,
-			'limit'    => 20,
+			'limit'    => $batch_size,
 			'paged'    => $page,
 			'paginate' => true,
 			'orderby'  => 'ID',

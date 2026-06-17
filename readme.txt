@@ -5,7 +5,7 @@ Tags: woocommerce, permissions, regenerate, downloads, batch
 Requires at least: 5.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -18,7 +18,8 @@ MCRPD Regenerate Download Permissions is a specialized utility  stores that need
 Unlike the default WooCommerce tools, this plugin allows you to:
 *   **Target specific products**: Only regenerate permissions for orders containing specific Product IDs.
 *   **Target specific order statuses**: Choose which order statuses to process via a modern, user-friendly interface.
-*   **Batch Processing**: Uses AJAX to process orders in batches of 20 to avoid server timeouts on large stores.
+*   **Batch Processing**: Uses AJAX to process orders in configurable batches (default: 20, up to 500) to avoid server timeouts on large stores.
+*   **Resumable Processing**: If an error occurs mid-process, your progress is saved automatically. Use the "Continue" button to resume from where you left off.
 *   **Real-time Feedback**: View detailed logs and progress scanning/update counts in real-time.
 *   **Modern UI**: Clean, minimalist interface designed for clarity and ease of use.
 
@@ -50,7 +51,11 @@ No, this plugin requires WooCommerce to be installed and active.
 
 = What happens if I stop the process? =
 
-You can stop the regeneration at any time using the "Stop" button. You can restart it later, but it will start from the beginning of the query (though reprocessing permissions is generally safe and idempotent).
+You can stop the regeneration at any time using the "Stop" button. Your progress is saved automatically. Use the "Continue" button to resume from the last successful batch. If you click "Start regeneration" instead, the process will start over from the beginning.
+
+= Can I change the batch size? =
+
+Yes! The default batch size is 20 orders per request. You can increase it up to 500 in the settings. However, higher values may cause server timeouts on shared hosting. If you experience errors, try reducing the batch size.
 
 == Feedback & Suggestions ==
 
@@ -62,6 +67,12 @@ This plugin is in constant evolution. If you have ideas or suggestions, do not h
 2.  Order Status selection with modern pill design.
 
 == Changelog ==
+
+= 1.1.0 =
+*   NEW: Configurable batch size (1–500, default: 20) with server capacity warning.
+*   NEW: "Continue" button to resume processing from the last successful batch after errors or stops.
+*   NEW: Progress is automatically saved to browser storage (expires after 5 hours).
+*   Improved error handling with informative messages about saved progress.
 
 = 1.0.3 =
 *   Add compatibility with WordPress 7.0.

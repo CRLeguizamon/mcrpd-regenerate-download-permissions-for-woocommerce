@@ -60,9 +60,14 @@ class MCRPD_Admin {
 			$clean_statuses = array_map( 'sanitize_key', wp_unslash( $raw_statuses ) );
 			$order_statuses = implode( ',', $clean_statuses );
 
+			// Batch size — sanitize and clamp between 1 and 500.
+			$batch_size = isset( $_POST['mcrpd_batch_size'] ) ? absint( wp_unslash( $_POST['mcrpd_batch_size'] ) ) : 20;
+			$batch_size = max( 1, min( 500, $batch_size ) );
+
 			$settings = array(
 				'product_ids_csv' => $product_ids_csv,
 				'order_statuses'  => $order_statuses,
+				'batch_size'      => $batch_size,
 			);
 
 			update_option( mcrpd_option_key(), $settings );
@@ -70,7 +75,8 @@ class MCRPD_Admin {
 			echo '<div class="notice notice-success"><p>' . esc_html__( 'Settings saved.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ) . '</p></div>';
 		}
 
-		$settings = mcrpd_get_settings();
+		$settings   = mcrpd_get_settings();
+		$batch_size = mcrpd_get_batch_size();
 		
 		// Get WC statuses.
 		$wc_statuses = function_exists( 'wc_get_order_statuses' ) ? wc_get_order_statuses() : array();
@@ -86,7 +92,7 @@ class MCRPD_Admin {
 					sprintf(
 						/* translators: %s: Batch size */
 						__( 'This tool scans orders and regenerates downloadable permissions in <strong>AJAX batches of %s orders</strong>. It only updates orders that contain any of the configured Product IDs.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-						'20'
+						esc_html( $batch_size )
 					)
 				);
 				?>
@@ -119,6 +125,19 @@ class MCRPD_Admin {
 							</p>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row"><label for="mcrpd_batch_size"><?php esc_html_e( 'Batch size', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label></th>
+						<td>
+							<input type="number" id="mcrpd_batch_size" name="mcrpd_batch_size" value="<?php echo esc_attr( $batch_size ); ?>" min="1" max="500" step="1">
+							<p class="description">
+								<?php esc_html_e( 'Number of orders to process per AJAX request (1–500).', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
+							</p>
+							<div class="mcrpd-batch-warning">
+								<span class="dashicons dashicons-warning"></span>
+								<?php esc_html_e( 'The batch size depends on your server capacity. The recommended value is 20. Increasing it may cause timeouts or memory errors on shared hosting. If you experience errors during regeneration, try reducing the batch size.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
+							</div>
+						</td>
+					</tr>
 				</table>
 
 				<p>
@@ -133,6 +152,7 @@ class MCRPD_Admin {
 			</p>
 			<p>
 				<button id="mcrpd-start" class="button button-primary"><?php esc_html_e( 'Start regeneration', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></button>
+				<button id="mcrpd-continue" class="button mcrpd-btn-continue mcrpd-continue-hidden"><?php esc_html_e( 'Continue', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></button>
 				<button id="mcrpd-stop" class="button"><?php esc_html_e( 'Stop', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></button>
 			</p>
 
@@ -178,13 +198,17 @@ class MCRPD_Admin {
 			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 			'nonce'   => wp_create_nonce( 'mcrpd_regen_ajax_nonce' ),
 			'strings' => array(
-				'error'      => __( 'Error:', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-				'unknown'    => __( 'Unknown error', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-				'done'       => __( 'Done.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-				'starting'   => __( 'Starting...', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-				'stopped'    => __( 'Stopped.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-				'ajaxFailed' => __( 'AJAX failed.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
-				'notRunning' => __( 'Not running.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'error'              => __( 'Error:', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'unknown'            => __( 'Unknown error', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'done'               => __( 'Done.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'starting'           => __( 'Starting...', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'stopped'            => __( 'Stopped.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'ajaxFailed'         => __( 'AJAX failed. Your progress has been saved — use the "Continue" button to resume.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'notRunning'         => __( 'Not running.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'continuing'         => __( 'Continuing from page %s...', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'continueNoProgress' => __( 'No saved progress found. Use "Start regeneration" instead.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'progressSaved'      => __( 'Progress saved. You can close this page and resume later using the "Continue" button.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'progressExpired'    => __( 'Saved progress has expired. Starting fresh.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 			),
 		);
 
