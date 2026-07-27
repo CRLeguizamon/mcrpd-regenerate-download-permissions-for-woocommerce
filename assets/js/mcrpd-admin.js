@@ -175,6 +175,11 @@
 			$('#mcrpd-log').empty();
 			logLine(strings.starting || 'Starting...');
 
+			// Warn if no Product IDs are specified.
+			if ( !$('#product_ids_csv').val().trim() ) {
+				logLine(strings.allProducts || 'All downloadable products will be processed.', 'warning');
+			}
+
 			step();
 		});
 
@@ -219,7 +224,7 @@
 			logLine(`<strong>${strings.stopped || 'Stopped.'}</strong>`);
 		});
 
-		// Status Selection UI Handlers
+		// Status and Category Selection UI Handlers
 		$(document).on('change', '.mcrpd-status-option input[type="checkbox"]', function () {
 			if ($(this).is(':checked')) {
 				$(this).closest('.mcrpd-status-option').addClass('checked');

@@ -45,9 +45,35 @@ class MCRPD_Ajax {
 		$product_ids = mcrpd_parse_product_ids( (string) $settings['product_ids_csv'] );
 		$statuses    = mcrpd_parse_statuses( (string) $settings['order_statuses'] );
 
-		if ( empty( $product_ids ) ) {
-			wp_send_json_error( array( 'message' => __( 'No valid product IDs configured.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ) ), 400 );
+		// Resolve category filter (AND with product IDs).
+		$cat_ids = mcrpd_parse_category_ids( (string) $settings['product_cats'] );
+		if ( ! empty( $cat_ids ) ) {
+			$cat_product_ids = mcrpd_get_downloadable_product_ids_in_categories( $cat_ids );
+			if ( ! empty( $product_ids ) ) {
+				// AND: keep only IDs present in both lists.
+				$product_ids = array_values( array_intersect( $product_ids, $cat_product_ids ) );
+			} else {
+				// Category only: use product IDs from those categories.
+				$product_ids = $cat_product_ids;
+			}
+
+			// If the intersection/category yields nothing, there is nothing to process.
+			if ( empty( $product_ids ) ) {
+				wp_send_json_success( array(
+					'page'      => 1,
+					'max_pages' => 0,
+					'next_page' => 1,
+					'scanned'   => 0,
+					'updated'   => 0,
+					'done'      => true,
+					'message'   => esc_html__( 'No downloadable products found matching the configured filters.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				) );
+			}
 		}
+		// When both product_ids and cat_ids are empty, $product_ids remains
+		// empty and mcrpd_order_contains_any_product_ids() will return true
+		// for every order (process all).
+
 		if ( empty( $statuses ) ) {
 			$statuses = array( 'wc-completed' );
 		}
@@ -67,6 +93,18 @@ class MCRPD_Ajax {
 			'type'     => 'shop_order',
 			'return'   => 'objects',
 		);
+
+		// Apply date range filter.
+		$date_from = isset( $settings['date_from'] ) ? sanitize_text_field( (string) $settings['date_from'] ) : '';
+		$date_to   = isset( $settings['date_to'] ) ? sanitize_text_field( (string) $settings['date_to'] ) : '';
+
+		if ( $date_from && $date_to ) {
+			$args['date_created'] = $date_from . '...' . $date_to;
+		} elseif ( $date_from ) {
+			$args['date_created'] = '>=' . $date_from;
+		} elseif ( $date_to ) {
+			$args['date_created'] = '<=' . $date_to;
+		}
 
 		/**
 		 * Filter query arguments for fetching orders.

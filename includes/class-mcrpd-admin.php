@@ -64,10 +64,29 @@ class MCRPD_Admin {
 			$batch_size = isset( $_POST['mcrpd_batch_size'] ) ? absint( wp_unslash( $_POST['mcrpd_batch_size'] ) ) : 20;
 			$batch_size = max( 1, min( 500, $batch_size ) );
 
+			// Date range — validate YYYY-MM-DD format.
+			$date_from = isset( $_POST['mcrpd_date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['mcrpd_date_from'] ) ) : '';
+			$date_to   = isset( $_POST['mcrpd_date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['mcrpd_date_to'] ) ) : '';
+
+			if ( $date_from && ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_from ) ) {
+				$date_from = '';
+			}
+			if ( $date_to && ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date_to ) ) {
+				$date_to = '';
+			}
+
+			// Product categories (multiselect checkboxes).
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized via absint on next line.
+			$raw_cats     = isset( $_POST['product_cats'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['product_cats'] ) ) : array();
+			$product_cats = implode( ',', array_filter( $raw_cats ) );
+
 			$settings = array(
 				'product_ids_csv' => $product_ids_csv,
 				'order_statuses'  => $order_statuses,
 				'batch_size'      => $batch_size,
+				'date_from'       => $date_from,
+				'date_to'         => $date_to,
+				'product_cats'    => $product_cats,
 			);
 
 			update_option( mcrpd_option_key(), $settings );
@@ -83,6 +102,54 @@ class MCRPD_Admin {
 		
 		// Current selected statuses.
 		$current_statuses = array_map( 'trim', explode( ',', $settings['order_statuses'] ) );
+
+		// Current selected categories.
+		$current_cats = array_filter( array_map( 'absint', explode( ',', $settings['product_cats'] ) ) );
+
+		// Get product categories that have at least one downloadable product.
+		$all_cats           = get_terms( array( 'taxonomy' => 'product_cat', 'hide_empty' => true ) );
+		$downloadable_cats  = array();
+		if ( ! is_wp_error( $all_cats ) ) {
+			foreach ( $all_cats as $cat_term ) {
+				$cat_products = wc_get_products( array(
+					'status'       => 'publish',
+					'limit'        => 1,
+					'return'       => 'ids',
+					'downloadable' => true,
+					'category'     => array( $cat_term->slug ),
+				) );
+
+				// Also check for variable products with downloadable variations.
+				if ( empty( $cat_products ) ) {
+					$variable_products = wc_get_products( array(
+						'status'   => 'publish',
+						'limit'    => 1,
+						'return'   => 'ids',
+						'type'     => 'variable',
+						'category' => array( $cat_term->slug ),
+					) );
+
+					if ( ! empty( $variable_products ) ) {
+						foreach ( $variable_products as $vp_id ) {
+							$vp = wc_get_product( $vp_id );
+							if ( $vp && $vp->is_type( 'variable' ) ) {
+								foreach ( $vp->get_children() as $child_id ) {
+									$variation = wc_get_product( $child_id );
+									if ( $variation && $variation->is_downloadable() ) {
+										$cat_products[] = $vp_id;
+										break 2;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				if ( ! empty( $cat_products ) ) {
+					$downloadable_cats[] = $cat_term;
+				}
+			}
+		}
 		?>
 		<div class="wrap mcrpd-wrap">
 			<h1><?php esc_html_e( 'Download Permissions Regenerator', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></h1>
@@ -91,7 +158,7 @@ class MCRPD_Admin {
 				echo wp_kses_post(
 					sprintf(
 						/* translators: %s: Batch size */
-						__( 'This tool scans orders and regenerates downloadable permissions in <strong>AJAX batches of %s orders</strong>. It only updates orders that contain any of the configured Product IDs.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+						__( 'This tool scans orders and regenerates downloadable permissions in <strong>AJAX batches of %s orders</strong>. Configure the filters below to target specific products, categories, statuses, or date ranges.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 						esc_html( $batch_size )
 					)
 				);
@@ -104,7 +171,35 @@ class MCRPD_Admin {
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="product_ids_csv"><?php esc_html_e( 'Product IDs (comma separated)', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label></th>
-						<td><input type="text" id="product_ids_csv" name="product_ids_csv" value="<?php echo esc_attr( $settings['product_ids_csv'] ); ?>"></td>
+						<td>
+							<input type="text" id="product_ids_csv" name="product_ids_csv" value="<?php echo esc_attr( $settings['product_ids_csv'] ); ?>">
+							<p class="description">
+								<?php esc_html_e( 'Enter specific Product IDs to filter. Leave empty to process all downloadable products (simple and variable).', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label><?php esc_html_e( 'Product categories', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label></th>
+						<td>
+							<?php if ( ! empty( $downloadable_cats ) ) : ?>
+								<div class="mcrpd-status-group">
+									<?php foreach ( $downloadable_cats as $cat_term ) : ?>
+										<?php $is_cat_checked = in_array( $cat_term->term_id, $current_cats, true ); ?>
+										<label class="mcrpd-status-option <?php echo $is_cat_checked ? 'checked' : ''; ?>">
+											<input type="checkbox" name="product_cats[]" value="<?php echo esc_attr( $cat_term->term_id ); ?>" <?php checked( $is_cat_checked, true ); ?>>
+											<?php echo esc_html( $cat_term->name ); ?>
+										</label>
+									<?php endforeach; ?>
+								</div>
+							<?php else : ?>
+								<p class="description">
+									<?php esc_html_e( 'No categories with downloadable products found.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
+								</p>
+							<?php endif; ?>
+							<p class="description">
+								<?php esc_html_e( 'Only categories containing at least one downloadable product are shown. Leave empty to include all categories. When combined with Product IDs, both filters must match (AND logic).', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
+							</p>
+						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="order_statuses"><?php esc_html_e( 'Order status', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label></th>
@@ -122,6 +217,24 @@ class MCRPD_Admin {
 							
 							<p class="description">
 								<?php esc_html_e( 'Select the order statuses to process.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label><?php esc_html_e( 'Date range', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label></th>
+						<td>
+							<div class="mcrpd-date-range">
+								<div class="mcrpd-date-field">
+									<label for="mcrpd_date_from"><?php esc_html_e( 'From', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label>
+									<input type="date" id="mcrpd_date_from" name="mcrpd_date_from" value="<?php echo esc_attr( $settings['date_from'] ); ?>">
+								</div>
+								<div class="mcrpd-date-field">
+									<label for="mcrpd_date_to"><?php esc_html_e( 'To', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?></label>
+									<input type="date" id="mcrpd_date_to" name="mcrpd_date_to" value="<?php echo esc_attr( $settings['date_to'] ); ?>">
+								</div>
+							</div>
+							<p class="description">
+								<?php esc_html_e( 'Filter orders created within this date range. Leave both empty for no date restriction. You can clear a date by clicking on each number and pressing Delete.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ); ?>
 							</p>
 						</td>
 					</tr>
@@ -210,6 +323,7 @@ class MCRPD_Admin {
 				'continueNoProgress' => __( 'No saved progress found. Use "Start regeneration" instead.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 				'progressSaved'      => __( 'Progress saved. You can close this page and resume later using the "Continue" button.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 				'progressExpired'    => __( 'Saved progress has expired. Starting fresh.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
+				'allProducts'        => __( 'No Product IDs specified — all downloadable products will be processed.', 'mcrpd-regenerate-download-permissions-for-woocommerce' ),
 			),
 		);
 

@@ -28,6 +28,9 @@ function mcrpd_default_settings() : array {
 		'product_ids_csv' => '',
 		'order_statuses'  => 'wc-completed', // comma separated
 		'batch_size'      => 20,
+		'date_from'       => '',
+		'date_to'         => '',
+		'product_cats'    => '', // comma separated term IDs
 	);
 
 	/**
@@ -103,6 +106,87 @@ function mcrpd_parse_statuses( string $csv ) : array {
 }
 
 /**
+ * Parse category IDs from CSV string.
+ *
+ * @since 1.1.1
+ * @param string $csv Comma separated values.
+ * @return array
+ */
+function mcrpd_parse_category_ids( string $csv ) : array {
+	$parts = array_map( 'trim', explode( ',', $csv ) );
+	$ids   = array_filter( array_map( 'absint', $parts ) );
+	return array_values( array_unique( $ids ) );
+}
+
+/**
+ * Get IDs of downloadable products belonging to given categories.
+ *
+ * Queries both simple and variable products in the specified
+ * product_cat terms that have at least one downloadable file.
+ *
+ * @since 1.1.1
+ * @param array $cat_ids Array of product_cat term IDs.
+ * @return array Array of product IDs.
+ */
+function mcrpd_get_downloadable_product_ids_in_categories( array $cat_ids ) : array {
+	if ( empty( $cat_ids ) ) {
+		return array();
+	}
+
+	$args = array(
+		'status'       => 'publish',
+		'limit'        => -1,
+		'return'       => 'ids',
+		'downloadable' => true,
+		'category'     => array(),
+	);
+
+	// Resolve category slugs from term IDs for wc_get_products compatibility.
+	foreach ( $cat_ids as $term_id ) {
+		$term = get_term( $term_id, 'product_cat' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$args['category'][] = $term->slug;
+		}
+	}
+
+	if ( empty( $args['category'] ) ) {
+		return array();
+	}
+
+	$product_ids = wc_get_products( $args );
+
+	// Also include variable products whose variations are downloadable.
+	$variable_args = array(
+		'status'   => 'publish',
+		'limit'    => -1,
+		'return'   => 'ids',
+		'type'     => 'variable',
+		'category' => $args['category'],
+	);
+
+	$variable_ids = wc_get_products( $variable_args );
+
+	foreach ( $variable_ids as $parent_id ) {
+		$product = wc_get_product( $parent_id );
+		if ( ! $product || ! $product->is_type( 'variable' ) ) {
+			continue;
+		}
+
+		$children = $product->get_children();
+		foreach ( $children as $child_id ) {
+			$variation = wc_get_product( $child_id );
+			if ( $variation && $variation->is_downloadable() ) {
+				$product_ids[] = $parent_id;
+				$product_ids[] = $child_id;
+				break; // At least one downloadable variation found.
+			}
+		}
+	}
+
+	return array_values( array_unique( array_map( 'absint', $product_ids ) ) );
+}
+
+/**
  * Check if order contains any of target products.
  *
  * @param WC_Order $order       Order object.
@@ -110,8 +194,9 @@ function mcrpd_parse_statuses( string $csv ) : array {
  * @return bool
  */
 function mcrpd_order_contains_any_product_ids( WC_Order $order, array $product_ids ) : bool {
+	// Empty array means "no filter" — all orders match.
 	if ( empty( $product_ids ) ) {
-		return false;
+		return true;
 	}
 
 	foreach ( $order->get_items() as $item ) {

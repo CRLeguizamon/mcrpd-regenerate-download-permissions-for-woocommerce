@@ -97,6 +97,41 @@
 	outline: none;
 }
 
+/* Date Range Layout */
+.mcrpd-date-range {
+	display: inline-flex;
+	gap: 16px;
+	align-items: flex-end;
+}
+
+.mcrpd-date-field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.mcrpd-date-field label {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--mcrpd-color-gray-500);
+}
+
+.mcrpd-wrap input[type="date"] {
+	border: 1px solid var(--mcrpd-color-gray-200);
+	border-radius: var(--mcrpd-border-radius);
+	padding: 8px 12px;
+	font-size: 14px;
+	width: 180px;
+	box-shadow: none;
+	transition: border-color 0.2s;
+}
+
+.mcrpd-wrap input[type="date"]:focus {
+	border-color: var(--mcrpd-color-blue);
+	box-shadow: 0 0 0 1px var(--mcrpd-color-blue);
+	outline: none;
+}
+
 /* Checkbox Groups - Premium Look */
 .mcrpd-status-group {
 	display: flex;
